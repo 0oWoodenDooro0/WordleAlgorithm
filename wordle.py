@@ -35,13 +35,14 @@ def check_color(answer, guess):
     color_list = ['⬜', '⬜', '⬜', '⬜', '⬜']
     for i in range(5):
         for j in range(5):
-            if answer[i] == guess[j]:
-                if i == j and guess[j] in answer_list:
-                    color_list[j] = '🟩'
-                    answer_list.remove(guess[j])
-                elif guess[j] in answer_list:
-                    color_list[j] = '🟨'
-                    answer_list.remove(guess[j])
+            if guess[i] == answer[j] and answer[j] in answer_list:
+                print(guess[i], answer[j], i, j, answer_list)
+                if i == j:
+                    color_list[i] = '🟩'
+                    answer_list.remove(answer[j])
+                elif color_list[i] != '🟩':
+                    color_list[i] = '🟨'
+                    answer_list.remove(answer[j])
     return ''.join(map(str, color_list))
 
 
@@ -51,9 +52,9 @@ def recommend_word(word_list=None):
         word_list = set(allow_words.words)
     letter_dict = get_frequency()
     recommend_word_list = []
-    f = 0
     for word in word_list:
         letter = set()
+        f = 0
         for i in range(5):
             if word[i] not in letter:
                 f += letter_dict[word[i]]
@@ -73,16 +74,16 @@ def get_possible_result(guess, color, result=None):
     gray = ['-', '-', '-', '-', '-']
     letter_count = {}
     for i in range(5):
-        if color == '🟩':
+        if color[i] == '🟩':
             green[i] = guess[i]
             if guess[i] in letter_count:
-                letter_count += 1
+                letter_count[guess[i]] += 1
             else:
                 letter_count[guess[i]] = 1
-        elif color == '🟨':
+        elif color[i] == '🟨':
             yellow[i] = guess[i]
             if guess[i] in letter_count:
-                letter_count += 1
+                letter_count[guess[i]] += 1
             else:
                 letter_count[guess[i]] = 1
         else:
@@ -91,22 +92,28 @@ def get_possible_result(guess, color, result=None):
     if green != ['-', '-', '-', '-', '-']:
         for word in result:
             for i in range(5):
-                if word[i] != green[i] and green[i] != '-':
+                if green[i] != '-' and green[i] != word[i]:
                     remove_result.add(word)
                     break
 
     if yellow != ['-', '-', '-', '-', '-']:
         for word in result:
             for i in range(5):
-                if word[i] == yellow[i] and yellow[i] != '-':
+                if yellow[i] != '-' and yellow[i] not in word:
+                    remove_result.add(word)
+                    break
+                elif yellow[i] != '-' and yellow[i] == word[i]:
                     remove_result.add(word)
                     break
 
     if gray != ['-', '-', '-', '-', '-']:
         for word in result:
             for i in range(5):
-                for j in range(5):
-                    if gray[i] == word[j] and gray[i] != '-':
+                if gray[i] != '-' and gray[i] in word and gray[i] not in letter_count:
+                    remove_result.add(word)
+                    break
+                for j in letter_count:
+                    if word.count(j) < letter_count[j]:
                         remove_result.add(word)
                         break
 
