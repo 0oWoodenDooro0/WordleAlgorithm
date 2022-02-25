@@ -34,15 +34,15 @@ def check_color(answer, guess):
     answer_list = list(answer)
     color_list = ['⬜', '⬜', '⬜', '⬜', '⬜']
     for i in range(5):
+        if guess[i] == answer[i] and guess[i] in answer_list:
+            color_list[i] = '🟩'
+            answer_list.remove(guess[i])
+    for i in range(5):
         for j in range(5):
-            if guess[i] == answer[j] and answer[j] in answer_list:
-                print(guess[i], answer[j], i, j, answer_list)
-                if i == j:
-                    color_list[i] = '🟩'
-                    answer_list.remove(answer[j])
-                elif color_list[i] != '🟩':
-                    color_list[i] = '🟨'
-                    answer_list.remove(answer[j])
+            if guess[i] == answer[j] and i != j and guess[i] in answer_list and color_list[i] != '🟩':
+                color_list[i] = '🟨'
+                answer_list.remove(guess[i])
+                break
     return ''.join(map(str, color_list))
 
 
