@@ -64,11 +64,32 @@ def recommend_word(word_list=None):
     return recommend_word_list[0][0]
 
 
-# 依照顏色來判斷可能得結果
-def get_possible_result(guess, color, result=None):
+# 以單字出現頻率回傳較多未出現字母之單字
+def recommend_other_word(letter_count, gray_letter_set):
+    if letter_count is None:
+        letter_count = {}
+    if gray_letter_set is None:
+        gray_letter_set = set()
+    word_list = set(allow_words.words)
+    letter_dict = get_frequency()
+    recommend_other_word_list = []
+    for word in word_list:
+        letter = set()
+        f = 0
+        for i in range(5):
+            if word[i] not in gray_letter_set and word[i] not in letter_count and word[i] not in letter:
+                f += letter_dict[word[i]]
+                letter.add(word[i])
+        recommend_other_word_list.append((word, f))
+    recommend_other_word_list.sort(key=lambda x: x[1], reverse=True)
+    return recommend_other_word_list[0][0]
+
+
+# 依照顏色來判斷可能得結果 Solution1
+def get_possible_result1(guess, color, result=None):
     if result is None:
         result = set(allow_words.words)
-    remove_result = set()
+    remove_result = set(guess)
     green = ['-', '-', '-', '-', '-']
     yellow = ['-', '-', '-', '-', '-']
     gray = ['-', '-', '-', '-', '-']
@@ -118,3 +139,77 @@ def get_possible_result(guess, color, result=None):
                         break
 
     return result.difference(remove_result)
+
+
+# 先找出3個字母以上再依顏色判斷可能得結果 Solution2
+def get_possible_result2(guess, color, result=None, letter_count=None, gray_letter_set=None):
+    if result is None:
+        result = set(allow_words.words)
+    if letter_count is None:
+        letter_count = {}
+    if gray_letter_set is None:
+        gray_letter_set = set()
+    remove_result = set(guess)
+    green = ['-', '-', '-', '-', '-']
+    yellow = ['-', '-', '-', '-', '-']
+    gray = ['-', '-', '-', '-', '-']
+    letter_current_count = {}
+
+    for i in range(5):
+        if color[i] == '🟩':
+            green[i] = guess[i]
+            if guess[i] in letter_current_count:
+                letter_current_count[guess[i]] += 1
+            else:
+                letter_current_count[guess[i]] = 1
+        elif color[i] == '🟨':
+            yellow[i] = guess[i]
+            if guess[i] in letter_current_count:
+                letter_current_count[guess[i]] += 1
+            else:
+                letter_current_count[guess[i]] = 1
+        else:
+            gray[i] = guess[i]
+            if gray[i] not in letter_current_count:
+                gray_letter_set.add(gray[i])
+
+    for letter in letter_current_count:
+        if letter not in letter_count:
+            letter_count[letter] = 1
+        elif letter_current_count[letter] > letter_count[letter]:
+            letter_count[letter] = letter_current_count[letter]
+
+    if green != ['-', '-', '-', '-', '-']:
+        for word in result:
+            for i in range(5):
+                if green[i] != '-' and green[i] != word[i]:
+                    remove_result.add(word)
+                    break
+
+    if yellow != ['-', '-', '-', '-', '-']:
+        for word in result:
+            for i in range(5):
+                if yellow[i] != '-' and yellow[i] not in word:
+                    remove_result.add(word)
+                    break
+                elif yellow[i] != '-' and yellow[i] == word[i]:
+                    remove_result.add(word)
+                    break
+
+    if gray != ['-', '-', '-', '-', '-']:
+        for word in result:
+            for i in range(5):
+                if gray[i] != '-' and gray[i] in word and gray[i] not in letter_current_count:
+                    remove_result.add(word)
+                    break
+                for j in letter_current_count:
+                    if word.count(j) < letter_current_count[j]:
+                        remove_result.add(word)
+                        break
+
+    is_letter_over_three = True
+
+    if len(letter_count) < 3:
+        is_letter_over_three = False
+
+    return result.difference(remove_result), letter_count, gray_letter_set, is_letter_over_three
