@@ -39,7 +39,7 @@ def check_color(answer, guess):
             answer_list.remove(guess[i])
     for i in range(5):  # 尋找向同位置以外的相同字母
         for j in range(5):
-            if guess[i] == answer[j] and i != j and guess[i] in answer_list and color_list[i] != '🟩':
+            if guess[i] == answer[j] and guess[i] in answer_list and color_list[i] != '🟩':
                 color_list[i] = '🟨'
                 answer_list.remove(guess[i])
                 break
