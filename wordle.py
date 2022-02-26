@@ -48,9 +48,9 @@ def check_color(answer, guess):
 def recommend_word(word_list=None):
     if word_list is None:
         word_list = set(allow_words.words)
-    letter_dict = get_frequency()
+    letter_dict = get_frequency()  # 取得單字出現頻率
     recommend_word_list = []
-    for word in word_list:
+    for word in word_list:  # 單字的字母相加由大到小排列
         letter = set()
         f = 0
         for i in range(5):
