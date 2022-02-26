@@ -65,7 +65,7 @@ def recommend_word(word_list=None):
 
 
 # 以單字出現頻率回傳較多未出現字母之單字
-def recommend_other_word(letter_count, gray_letter_set):
+def recommend_other_word(letter_count, gray_letter_set, last_guess):
     if letter_count is None:
         letter_count = {}
     if gray_letter_set is None:
@@ -76,6 +76,8 @@ def recommend_other_word(letter_count, gray_letter_set):
     for word in word_list:
         letter = set()
         f = 0
+        if word == last_guess:
+            break
         for i in range(5):
             if word[i] not in gray_letter_set and word[i] not in letter_count and word[i] not in letter:
                 f += letter_dict[word[i]]
@@ -83,6 +85,15 @@ def recommend_other_word(letter_count, gray_letter_set):
         recommend_other_word_list.append((word, f))
     recommend_other_word_list.sort(key=lambda x: x[1], reverse=True)
     return recommend_other_word_list[0][0]
+
+
+# 統計所有資料
+def count(count_dict, times):
+    if times in count_dict:
+        count_dict[times] += 1
+    else:
+        count_dict[times] = 1
+    return count_dict
 
 
 # 依照顏色來判斷可能得結果 Solution1
@@ -142,7 +153,7 @@ def get_possible_result1(guess, color, result=None):
 
 
 # 前三次先找出不同的字母再判斷可能得結果 Solution2
-def get_possible_result2(guess, color, result=None, letter_count=None, gray_letter_set=None):
+def get_possible_result2(guess, color, times, result=None, letter_count=None, gray_letter_set=None):
     if result is None:
         result = set(allow_words.words)
     if letter_count is None:
@@ -209,7 +220,7 @@ def get_possible_result2(guess, color, result=None, letter_count=None, gray_lett
 
     is_letter_over_three = True
 
-    if len(letter_count) + len(gray_letter_set) < 15:
+    if times <= 3 and len(result) >= 100:
         is_letter_over_three = False
 
     return result.difference(remove_result), letter_count, gray_letter_set, is_letter_over_three
