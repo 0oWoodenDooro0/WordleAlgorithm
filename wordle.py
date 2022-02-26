@@ -89,7 +89,7 @@ def recommend_other_word(letter_count, gray_letter_set):
 def get_possible_result1(guess, color, result=None):
     if result is None:
         result = set(allow_words.words)
-    remove_result = set(guess)
+    remove_result = {guess}
     green = ['-', '-', '-', '-', '-']
     yellow = ['-', '-', '-', '-', '-']
     gray = ['-', '-', '-', '-', '-']
@@ -141,7 +141,7 @@ def get_possible_result1(guess, color, result=None):
     return result.difference(remove_result)
 
 
-# 先找出3個字母以上再依顏色判斷可能得結果 Solution2
+# 前三次先找出不同的字母再判斷可能得結果 Solution2
 def get_possible_result2(guess, color, result=None, letter_count=None, gray_letter_set=None):
     if result is None:
         result = set(allow_words.words)
@@ -149,7 +149,7 @@ def get_possible_result2(guess, color, result=None, letter_count=None, gray_lett
         letter_count = {}
     if gray_letter_set is None:
         gray_letter_set = set()
-    remove_result = set(guess)
+    remove_result = {guess}
     green = ['-', '-', '-', '-', '-']
     yellow = ['-', '-', '-', '-', '-']
     gray = ['-', '-', '-', '-', '-']
@@ -209,7 +209,7 @@ def get_possible_result2(guess, color, result=None, letter_count=None, gray_lett
 
     is_letter_over_three = True
 
-    if len(letter_count) < 3:
+    if len(letter_count) + len(gray_letter_set) < 15:
         is_letter_over_three = False
 
     return result.difference(remove_result), letter_count, gray_letter_set, is_letter_over_three
