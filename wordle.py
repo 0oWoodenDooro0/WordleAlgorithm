@@ -1,7 +1,7 @@
 import allow_words
 
 
-# 計算出所有字母在單字中的出現的頻率
+# 計算出所有字母在單字庫中出現的頻率
 def get_frequency():
     letter_dict = {}
 
