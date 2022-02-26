@@ -29,15 +29,15 @@ def is_word(guess):
         return False
 
 
-# 檢查顏色
+# 檢查顏色(相同的字母 guess不可超過answer的數量)
 def check_color(answer, guess):
     answer_list = list(answer)
     color_list = ['⬜', '⬜', '⬜', '⬜', '⬜']
-    for i in range(5):
+    for i in range(5):  # 確認字母與位置相同
         if guess[i] == answer[i] and guess[i] in answer_list:
             color_list[i] = '🟩'
             answer_list.remove(guess[i])
-    for i in range(5):
+    for i in range(5):  # 尋找向同位置以外的相同字母
         for j in range(5):
             if guess[i] == answer[j] and i != j and guess[i] in answer_list and color_list[i] != '🟩':
                 color_list[i] = '🟨'
