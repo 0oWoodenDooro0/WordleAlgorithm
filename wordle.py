@@ -4,7 +4,7 @@ import allow_words
 # 計算出所有字母在單字庫中出現的頻率
 def get_frequency():
     letter_dict = {}
-
+    # 將每個單字的字母出現次數相加(同一單字中有重複字母不算)
     for answer in allow_words.words:
         times = {}
         for i in range(5):
@@ -14,10 +14,8 @@ def get_frequency():
             elif answer[i] not in times:
                 letter_dict[answer[i]] += 1
                 times[answer[i]] = 1
-
-    for i in letter_dict:
+    for i in letter_dict:  # 計算出現次數/總單字量
         letter_dict[i] = letter_dict[i] / len(allow_words.words)
-
     return letter_dict
 
 
