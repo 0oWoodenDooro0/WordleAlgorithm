@@ -1,23 +1,23 @@
 import allow_words
 import wordle
 
-# count = {}
-# for answer in allow_words.words:
-#     result = None
-#     times = 0
-#     while True:
-#         guess = wordle.recommend_word(result)
-#         color = wordle.check_color(answer, guess)
-#         result = wordle.get_possible_result1(guess, color, result)
-#         times += 1
-#         if guess == answer:
-#             count = wordle.count(count, times)
-#             break
-#
-# print("Solution1:", sorted([(key, value) for key, value in count.items()]), "\nsum:", len(allow_words.words))
+count = {}
+for answer in allow_words.words:
+    result = None
+    times = 0
+    while True:
+        guess = wordle.recommend_word(result)
+        color = wordle.check_color(answer, guess)
+        result = wordle.get_possible_result1(guess, color, result)
+        times += 1
+        if guess == answer:
+            count = wordle.count(count, times)
+            break
+
+print("Solution1:", sorted([(key, value) for key, value in count.items()]), "\nsum:", len(allow_words.words))
 
 count = {}
-for answer in ['boost']:
+for answer in allow_words.words:
     guess = None
     result = None
     letter_count = None
@@ -29,9 +29,7 @@ for answer in ['boost']:
             guess = wordle.recommend_word(result)
         else:
             guess = wordle.recommend_other_word(letter_count, gray_letter_set, guess)
-        print(guess)
         color = wordle.check_color(answer, guess)
-        print(color)
         result, letter_count, gray_letter_set, flag = wordle.get_possible_result2(guess, color, times,
                                                                                   result,
                                                                                   letter_count,
